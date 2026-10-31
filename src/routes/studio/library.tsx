@@ -1,5 +1,5 @@
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router'
-import { CalendarClock, Eye, Plus, RotateCw, Send, Trash, Undo2 } from 'lucide-react'
+import { CalendarClock, Eye, Plus, RotateCw, Send, Trash, Undo2, Download, Share2 } from 'lucide-react'
 import { Empty, PageHeader, StatusBadge, Thumb, sourceLabel } from '../../components/studio-ui'
 import type { Video, VideoStatus } from '../../lib/fixtures'
 import { compact, dateTime } from '../../lib/format'
@@ -24,6 +24,11 @@ function LibraryPage() {
   const taken = videos.flatMap((v) => (v.scheduledFor ? [v.scheduledFor] : []))
   const countOf = (f: Filter) =>
     f === 'all' ? videos.length : videos.filter((v) => v.status === f).length
+
+  // Manual share function hook
+  const handleManualShare = async (videoId: string) => {
+    alert(`Starting manual upload for video ID: ${videoId}. We will hook this up to your API endpoint next!`);
+  };
 
   return (
     <>
@@ -74,6 +79,8 @@ function LibraryPage() {
                   {v.title}
                 </h2>
                 <Detail status={v.status} video={v} />
+                
+                {/* Visual Action Button Grid Section */}
                 <div className="mt-auto flex flex-wrap gap-2 pt-5">
                   {v.status === 'ready' && (
                     <>
@@ -100,6 +107,30 @@ function LibraryPage() {
                       <RotateCw className="size-4" /> Retry render
                     </button>
                   )}
+
+                  {/* Manual Backup Operations (Download & Manual Channel Upload) */}
+                  {v.status !== 'generating' && (
+                    <>
+                      <a 
+                        href={v.url || '#'} 
+                        download={`video-${v.id}.mp4`}
+                        className="btn border border-line text-muted hover:text-bone"
+                        title="Download file to your local computer"
+                      >
+                        <Download className="size-4" />
+                      </a>
+                      {(v.status === 'ready' || v.status === 'scheduled' || v.status === 'failed') && (
+                        <button 
+                          className="btn border border-red-900/50 text-red-400 hover:bg-red-950/30 hover:text-red-300"
+                          onClick={() => handleManualShare(v.id)}
+                          title="Manually upload this asset to your YouTube Channel"
+                        >
+                          <Share2 className="size-4" /> Manual Share
+                        </button>
+                      )}
+                    </>
+                  )}
+
                   {v.status !== 'published' && v.status !== 'generating' && (
                     <button className="btn-quiet ml-auto" onClick={() => remove(v)} aria-label={`Delete ${v.title}`}>
                       <Trash className="size-4" />
