@@ -1,4 +1,6 @@
-import { Link, createFileRoute, useNavigate, createServerFn } from '@tanstack/react-router'
+import { Link, createFileRoute } from '@tanstack/react-router'
+import { createServerFn } from '@tanstack/react-start' // or '@tanstack/start' depending on your project setup
+
 import { CalendarClock, Eye, Plus, RotateCw, Send, Trash, Undo2, Download, Share2 } from 'lucide-react'
 import { Empty, PageHeader, StatusBadge, Thumb, sourceLabel } from '../../components/studio-ui'
 import type { Video, VideoStatus } from '../../components/studio-ui' // Adjusted to assume shared type location or your fixtures
